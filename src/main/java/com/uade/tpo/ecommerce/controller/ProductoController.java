@@ -17,13 +17,17 @@ public class ProductoController {
     private ProductoService productoService;
 
     /**
-     * LISTAR PRODUCTOS (Ordenados alfabéticamente)
+     * LISTAR PRODUCTOS
+     * Puede recibir un parámetro opcional 'categoriaId' para filtrar.
      * URL: GET http://localhost:8081/api/productos
+     * URL con Filtro: GET http://localhost:8081/api/productos?categoriaId=1
      */
     @GetMapping
-    public ResponseEntity<List<Producto>> getAllProductos() {
-        List<Producto> productos = productoService.getAllProductos();
-        return ResponseEntity.ok(productos);
+    public ResponseEntity<List<Producto>> getProductos(@RequestParam(required = false) Long categoriaId) {
+        if (categoriaId != null) {
+            return ResponseEntity.ok(productoService.getProductosByCategoria(categoriaId));
+        }
+        return ResponseEntity.ok(productoService.getAllProductos());
     }
 
     /**

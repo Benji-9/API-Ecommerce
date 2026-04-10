@@ -9,15 +9,19 @@ import com.uade.tpo.ecommerce.exception.ResourceNotFoundException;
 import jakarta.transaction.Transactional;
 
 @Service
-@Transactional // Asegura la integridad de las operaciones en la DB
+@Transactional
 public class ProductoService {
 
     @Autowired
     private ProductoRepository productoRepository;
 
-    // Devuelve el listado alfabético requerido para la Home del TPO
     public List<Producto> getAllProductos() {
         return productoRepository.findAllByOrderByNombreAsc();
+    }
+
+    // Nuevo metodo para filtrar por categoría
+    public List<Producto> getProductosByCategoria(Long categoriaId) {
+        return productoRepository.findByCategorias_IdOrderByNombreAsc(categoriaId);
     }
 
     public Producto getProductoById(Long id) {
@@ -42,7 +46,7 @@ public class ProductoService {
         producto.setPrecio(productoDetails.getPrecio());
         producto.setDescripcion(productoDetails.getDescripcion());
         producto.setStock(productoDetails.getStock());
-        producto.setImagenUrl(productoDetails.getImagenUrl());
+        producto.setImagenesUrl(productoDetails.getImagenesUrl()); // Actualizamos lista de fotos
         return productoRepository.save(producto);
     }
 }

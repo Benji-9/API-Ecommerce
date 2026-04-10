@@ -14,10 +14,16 @@ public class Producto {
 
     @Column(nullable = false, length = 100)
     private String nombre;
+
     private double precio;
     private String descripcion;
     private Integer stock;
-    private String imagenUrl;
+
+    // El TPO pide una o más fotos. Usamos una colección de elementos simple.
+    @ElementCollection
+    @CollectionTable(name = "producto_imagenes", joinColumns = @JoinColumn(name = "producto_id"))
+    @Column(name = "imagen_url")
+    private List<String> imagenesUrl = new ArrayList<>();
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
