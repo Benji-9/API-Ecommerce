@@ -1,59 +1,57 @@
 package com.uade.tpo.ecommerce.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
+import com.uade.tpo.ecommerce.dto.CategoriaDTO;
 import com.uade.tpo.ecommerce.model.Categoria;
 import com.uade.tpo.ecommerce.service.CategoriaService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
-
-// La api para productos con los endpoints para crear, editar, eliminar y listar productos
-// http://localhost:8080/api/productos Listar productos
-// http://localhost:8080/api/productos/1 Buscar productos por ID
-// http://localhost:8080/api/productosEditar producto
-// http://localhost:8080/api/productosEliminar producto
 @RestController
 @RequestMapping("/api/categorias")
 public class CategoriaController {
+
     @Autowired
     private CategoriaService categoriaService;
 
-    // http://localhost:8080/api/categorias -> devuelve la lista de categorias
+    /**
+     * LISTAR CATEGORÍAS (Requerido para la Home del TPO)
+     * URL: GET http://localhost:8081/api/categorias
+     */
     @GetMapping
-    public List<Categoria> getAllCategorias() {
-        return categoriaService.getAllCategorias();
+    public ResponseEntity<List<CategoriaDTO>> getAllCategorias() {
+        return ResponseEntity.ok(categoriaService.getAllCategorias());
     }
 
-    // http://localhost:8080/api/categorias/1 -> devuelve la categoria con id 1
+    /**
+     * OBTENER CATEGORÍA POR ID
+     * URL: GET http://localhost:8081/api/categorias/{id}
+     */
     @GetMapping("/{id}")
-    public Categoria getCategoriaById(@PathVariable Long id) {
-        return categoriaService.getCategoriaById(id);
+    public ResponseEntity<CategoriaDTO> getCategoriaById(@PathVariable Long id) {
+        return ResponseEntity.ok(categoriaService.getCategoriaById(id));
     }
 
-    // del http://localhost:8080/api/categorias/1 -> elimina la categoria con id 1
-    @DeleteMapping("/{id}")
-    public void deleteProductoById(@PathVariable Long id) {
-        categoriaService.deleteCategoriaById(id);
-    }
-
+    /**
+     * CREAR CATEGORÍA
+     * URL: POST http://localhost:8081/api/categorias
+     * Body JSON: { "nombre": "Electrónica" }
+     */
     @PostMapping
-    public Categoria saveCategoria(@RequestBody Categoria categoria) {
-        return categoriaService.saveCategoria(categoria);
-
+    public ResponseEntity<CategoriaDTO> saveCategoria(@RequestBody Categoria categoria) {
+        return new ResponseEntity<>(categoriaService.saveCategoria(categoria), HttpStatus.CREATED);
     }
 
-    @PutMapping("/{id}")
-    public Categoria udpateCategoria(@PathVariable Long id, @RequestBody Categoria categoria) {
-        return categoriaService.updateCategoria(id, categoria);
+    /**
+     * ELIMINAR CATEGORÍA
+     * URL: DELETE http://localhost:8081/api/categorias/{id}
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteCategoria(@PathVariable Long id) {
+        categoriaService.deleteCategoria(id);
+        return ResponseEntity.noContent().build();
     }
-
 }

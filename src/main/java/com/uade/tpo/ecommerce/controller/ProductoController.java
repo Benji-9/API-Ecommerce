@@ -1,59 +1,67 @@
 package com.uade.tpo.ecommerce.controller;
 
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
-
 import com.uade.tpo.ecommerce.model.Producto;
 import com.uade.tpo.ecommerce.service.ProductoService;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.DeleteMapping;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.PutMapping;
-
-// La api para productos con los endpoints para crear, editar, eliminar y listar productos
-// http://localhost:8080/api/productos Listar productos
-// http://localhost:8080/api/productos/1 Buscar productos por ID
-// http://localhost:8080/api/productosEditar producto
-// http://localhost:8080/api/productosEliminar producto
 @RestController
 @RequestMapping("/api/productos")
 public class ProductoController {
+
     @Autowired
     private ProductoService productoService;
 
-    // http://localhost:8080/api/productos -> devuelve la lista de productos
+    /**
+     * LISTAR PRODUCTOS (Ordenados alfabéticamente)
+     * URL: GET http://localhost:8081/api/productos
+     */
     @GetMapping
-    public List<Producto> getAllProductos() {
-        return productoService.getAllProductos();
+    public ResponseEntity<List<Producto>> getAllProductos() {
+        List<Producto> productos = productoService.getAllProductos();
+        return ResponseEntity.ok(productos);
     }
 
-    // http://localhost:8080/api/productos/1 -> devuelve el producto con id 1
+    /**
+     * BUSCAR POR ID (Detalle del producto)
+     * URL: GET http://localhost:8081/api/productos/{id}
+     */
     @GetMapping("/{id}")
-    public Producto getProductoById(@PathVariable Long id) {
-        return productoService.getProductoById(id);
+    public ResponseEntity<Producto> getProductoById(@PathVariable Long id) {
+        return ResponseEntity.ok(productoService.getProductoById(id));
     }
 
-    // del http://localhost:8080/api/productos/1 -> elimina el producto con id 1
-    @DeleteMapping("/{id}")
-    public void deleteProductoById(@PathVariable Long id) {
-        productoService.deleteProductoById(id);
-    }
-
+    /**
+     * ALTA DE PRODUCTO
+     * URL: POST http://localhost:8081/api/productos
+     * Body: JSON con datos del producto
+     */
     @PostMapping
-    public Producto saveProducto(@RequestBody Producto producto) {
-        return productoService.saveProducto(producto);
-
+    public ResponseEntity<Producto> saveProducto(@RequestBody Producto producto) {
+        Producto nuevo = productoService.saveProducto(producto);
+        return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
     }
 
+    /**
+     * EDITAR PRODUCTO
+     * URL: PUT http://localhost:8081/api/productos/{id}
+     */
     @PutMapping("/{id}")
-    public Producto udpateProducto(@PathVariable Long id, @RequestBody Producto producto) {
-        return productoService.updateProducto(id, producto);
+    public ResponseEntity<Producto> updateProducto(@PathVariable Long id, @RequestBody Producto producto) {
+        return ResponseEntity.ok(productoService.updateProducto(id, producto));
     }
 
+    /**
+     * ELIMINAR PRODUCTO
+     * URL: DELETE http://localhost:8081/api/productos/{id}
+     */
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deleteProductoById(@PathVariable Long id) {
+        productoService.deleteProductoById(id);
+        return ResponseEntity.noContent().build();
+    }
 }

@@ -16,7 +16,8 @@ public class Producto {
     private String nombre;
     private double precio;
     private String descripcion;
-
+    private Integer stock;
+    private String imagenUrl;
 
     @ManyToMany(fetch = FetchType.LAZY)
     @JoinTable(
@@ -25,5 +26,4 @@ public class Producto {
             inverseJoinColumns = @JoinColumn(name = "categoria_id")
     )
     private List<Categoria> categorias = new ArrayList<>();
-
 }

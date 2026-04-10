@@ -1,17 +1,13 @@
 package com.uade.tpo.ecommerce.dto;
 
-import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Data;
-import lombok.NoArgsConstructor;
 
 @Data
-@Builder
-@AllArgsConstructor
-@NoArgsConstructor
 public class RegisterRequest {
-    private String nombre;
-    private String apellido;
+    // Definimos todos los campos que el usuario completa en el formulario de registro
+    private String nombreUsuario;
     private String email;
     private String password;
+    private String nombre;
+    private String apellido;
 }

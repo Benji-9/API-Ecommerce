@@ -1,21 +1,24 @@
 package com.uade.tpo.ecommerce.service;
 
-import java.util.List;
 
+import com.uade.tpo.ecommerce.exception.BadRequestException;
+import com.uade.tpo.ecommerce.exception.ResourceNotFoundException;
+import com.uade.tpo.ecommerce.model.Producto;
+import com.uade.tpo.ecommerce.repository.ProductoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import com.uade.tpo.ecommerce.model.Pedido;
 import com.uade.tpo.ecommerce.repository.PedidoRepository;
-
 import jakarta.transaction.Transactional;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
-@Transactional
 public class PedidoService {
-
     @Autowired
     private PedidoRepository pedidoRepository;
+    @Autowired
+    private ProductoRepository productoRepository;
 
     public List<Pedido> getAllPedidos() {
         return pedidoRepository.findAll();
@@ -29,18 +32,36 @@ public class PedidoService {
         pedidoRepository.deleteById(id);
     }
 
-    public Pedido savePedido(Pedido pedido) {
-        return pedidoRepository.save(pedido);
+    @Transactional // CRÍTICO para el checkout [cite: 630]
+    public Pedido realizarCheckout(Pedido pedido) {
+        double totalCalculado = 0;
 
+        for (Producto p : pedido.getProductos()) {
+            Producto dbProd = productoRepository.findById(p.getId())
+                    .orElseThrow(() -> new ResourceNotFoundException("Producto no encontrado"));
+
+            if (dbProd.getStock() <= 0) {
+                throw new BadRequestException("El producto " + dbProd.getNombre() + " no tiene stock");
+            }
+
+            dbProd.setStock(dbProd.getStock() - 1); // Descontar stock [cite: 629]
+            productoRepository.save(dbProd);
+
+            totalCalculado += dbProd.getPrecio();
+        }
+
+        pedido.setTotal(totalCalculado); // Calcular costo total [cite: 628]
+        pedido.setFecha(LocalDateTime.now());
+        pedido.setEstado("COMPLETADO");
+        return pedidoRepository.save(pedido);
     }
 
-    public Pedido updatePedido(Long id, Pedido pedido) {
-        Pedido existingPedido = getPedidoById(id);
-        if (existingPedido != null) {
-            existingPedido.setProductos(pedido.getProductos());
-            existingPedido.setEstado(pedido.getEstado());
-            existingPedido.setUsuario(pedido.getUsuario());
-            return pedidoRepository.save(existingPedido);
+    public Pedido updatePedido(Long id, Pedido pedidoDetails) {
+        Pedido pedido = getPedidoById(id);
+        if (pedido != null) {
+            pedido.setDetalle(pedidoDetails.getDetalle());
+            pedido.setEstado(pedidoDetails.getEstado());
+            return pedidoRepository.save(pedido);
         }
         return null;
     }
