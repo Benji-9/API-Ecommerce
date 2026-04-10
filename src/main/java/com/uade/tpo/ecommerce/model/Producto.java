@@ -1,13 +1,21 @@
 package com.uade.tpo.ecommerce.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.NoArgsConstructor;
+import lombok.AllArgsConstructor;
 import java.util.ArrayList;
 import java.util.List;
 
-@Data
-@Entity(name = "productos")
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Entity
+@Table(name = "productos")
 public class Producto {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
@@ -19,7 +27,6 @@ public class Producto {
     private String descripcion;
     private Integer stock;
 
-    // El TPO pide una o más fotos. Usamos una colección de elementos simple.
     @ElementCollection
     @CollectionTable(name = "producto_imagenes", joinColumns = @JoinColumn(name = "producto_id"))
     @Column(name = "imagen_url")

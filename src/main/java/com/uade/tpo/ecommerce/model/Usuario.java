@@ -8,21 +8,24 @@ import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Getter;
+import lombok.Setter;
 import lombok.NoArgsConstructor;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
-@Data
+@Getter
+@Setter
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-@Entity(name = "usuarios")
-// Implementamos UserDetails para que Spring Security maneje la autenticación
+@Entity
+@Table(name = "usuarios")
 public class Usuario implements UserDetails {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    // Campo obligatorio según TPO
     @Column(unique = true, nullable = false)
     private String nombreUsuario;
 
@@ -38,28 +41,23 @@ public class Usuario implements UserDetails {
     @Enumerated(EnumType.STRING)
     private Role role;
 
+    // @JsonIgnore evita que se serialice la lista de pedidos al devolver un usuario
+    @JsonIgnore
     @OneToMany(mappedBy = "usuario", cascade = CascadeType.ALL)
     private List<Pedido> pedidos;
 
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
-        // Convierte el rol en una autoridad entendible por Spring Security (ej: ROLE_USER)
         return List.of(new SimpleGrantedAuthority("ROLE_" + (role != null ? role.name() : "USER")));
     }
 
     @Override
     public String getUsername() {
-        // El TPO pide que el login sea con mail
         return email;
     }
 
-    // Métodos obligatorios de UserDetails para el estado de la cuenta
-    @Override
-    public boolean isAccountNonExpired() { return true; }
-    @Override
-    public boolean isAccountNonLocked() { return true; }
-    @Override
-    public boolean isCredentialsNonExpired() { return true; }
-    @Override
-    public boolean isEnabled() { return true; }
+    @Override public boolean isAccountNonExpired() { return true; }
+    @Override public boolean isAccountNonLocked() { return true; }
+    @Override public boolean isCredentialsNonExpired() { return true; }
+    @Override public boolean isEnabled() { return true; }
 }
