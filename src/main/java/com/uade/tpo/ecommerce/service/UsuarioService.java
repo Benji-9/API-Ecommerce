@@ -1,12 +1,12 @@
-package com.uade.tpo.e_comerce.service;
+package com.uade.tpo.ecommerce.service;
 
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.uade.tpo.e_comerce.model.Usuario;
-import com.uade.tpo.e_comerce.repository.UsuarioRepository;
+import com.uade.tpo.ecommerce.model.Usuario;
+import com.uade.tpo.ecommerce.repository.UsuarioRepository;
 
 import jakarta.transaction.Transactional;
 

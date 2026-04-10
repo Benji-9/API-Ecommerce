@@ -1,10 +1,10 @@
-package com.uade.tpo.e_comerce.controller;
+package com.uade.tpo.ecommerce.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.uade.tpo.e_comerce.model.Producto;
-import com.uade.tpo.e_comerce.service.ProductoService;
+import com.uade.tpo.ecommerce.model.Producto;
+import com.uade.tpo.ecommerce.service.ProductoService;
 
 import java.util.List;
 

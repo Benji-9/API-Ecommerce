@@ -1,10 +1,10 @@
-package com.uade.tpo.e_comerce.controller;
+package com.uade.tpo.ecommerce.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.uade.tpo.e_comerce.model.Categoria;
-import com.uade.tpo.e_comerce.service.CategoriaService;
+import com.uade.tpo.ecommerce.model.Pedido;
+import com.uade.tpo.ecommerce.service.PedidoService;
 
 import java.util.List;
 
@@ -22,38 +22,38 @@ import org.springframework.web.bind.annotation.PutMapping;
 // http://localhost:8080/api/productosEditar producto
 // http://localhost:8080/api/productosEliminar producto
 @RestController
-@RequestMapping("/api/categorias")
-public class CategoriaController {
+@RequestMapping("/api/pedidos")
+public class PedidoController {
     @Autowired
-    private CategoriaService categoriaService;
+    private PedidoService pedidoService;
 
-    // http://localhost:8080/api/categorias -> devuelve la lista de categorias
+    // http://localhost:8080/api/productos -> devuelve la lista de productos
     @GetMapping
-    public List<Categoria> getAllCategorias() {
-        return categoriaService.getAllCategorias();
+    public List<Pedido> getAllPedidos() {
+        return pedidoService.getAllPedidos();
     }
 
-    // http://localhost:8080/api/categorias/1 -> devuelve la categoria con id 1
+    // http://localhost:8080/api/productos/1 -> devuelve el producto con id 1
     @GetMapping("/{id}")
-    public Categoria getCategoriaById(@PathVariable Long id) {
-        return categoriaService.getCategoriaById(id);
+    public Pedido getPedidoById(@PathVariable Long id) {
+        return pedidoService.getPedidoById(id);
     }
 
-    // del http://localhost:8080/api/categorias/1 -> elimina la categoria con id 1
+    // del http://localhost:8080/api/productos/1 -> elimina el producto con id 1
     @DeleteMapping("/{id}")
     public void deleteProductoById(@PathVariable Long id) {
-        categoriaService.deleteCategoriaById(id);
+        pedidoService.deletePedidoById(id);
     }
 
     @PostMapping
-    public Categoria saveCategoria(@RequestBody Categoria categoria) {
-        return categoriaService.saveCategoria(categoria);
+    public Pedido savePedido(@RequestBody Pedido pedido) {
+        return pedidoService.savePedido(pedido);
 
     }
 
     @PutMapping("/{id}")
-    public Categoria udpateCategoria(@PathVariable Long id, @RequestBody Categoria categoria) {
-        return categoriaService.updateCategoria(id, categoria);
+    public Pedido udpatePedido(@PathVariable Long id, @RequestBody Pedido pedido) {
+        return pedidoService.updatePedido(id, pedido);
     }
 
 }

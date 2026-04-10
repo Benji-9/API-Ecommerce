@@ -1,7 +1,7 @@
-package com.uade.tpo.e_comerce.repository;
+package com.uade.tpo.ecommerce.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
-import com.uade.tpo.e_comerce.model.Pedido;
+import com.uade.tpo.ecommerce.model.Pedido;
 
 public interface PedidoRepository extends JpaRepository<Pedido, Long> {
 
