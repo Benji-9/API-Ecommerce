@@ -14,6 +14,7 @@ import com.uade.tpo.ecommerce.model.Usuario;
 import com.uade.tpo.ecommerce.repository.UsuarioRepository;
 import com.uade.tpo.ecommerce.security.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import com.uade.tpo.ecommerce.dto.RegisterResponse;
 
 @Service
 @Transactional
@@ -25,7 +26,7 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
     private final JwtUtil jwtUtil;
 
-    public String register(RegisterRequest request) {
+    public RegisterResponse register(RegisterRequest request) {
         // Validaciones de duplicados para evitar errores de base de datos
         if (usuarioRepository.existsByEmail(request.getEmail())) {
             throw new RuntimeException("El email ya existe");
@@ -34,22 +35,28 @@ public class AuthenticationService {
             throw new RuntimeException("El nombre de usuario ya existe");
         }
 
-        // Ahora el Builder reconoce nombreUsuario porque lo agregamos a la entidad
         Usuario usuario = Usuario.builder()
                 .nombreUsuario(request.getNombreUsuario())
                 .nombre(request.getNombre())
                 .apellido(request.getApellido())
                 .email(request.getEmail())
-                .password(passwordEncoder.encode(request.getPassword())) // Encriptación obligatoria
+                .password(passwordEncoder.encode(request.getPassword()))
+                .fechaNacimiento(request.getFechaNacimiento()) // Set fecha
+                .sexo(request.getSexo()) // Set sexo
                 .role(Role.USER)
                 .build();
 
         usuarioRepository.save(usuario);
-        return "Usuario registrado exitosamente";
+        // Devolvemos el objeto en lugar de un String plano
+        return RegisterResponse.builder()
+                .mensaje("Usuario registrado exitosamente")
+                .nombreUsuario(usuario.getNombreUsuario())
+                .email(usuario.getEmail())
+                .build();
     }
 
     public String authenticate(LoginRequest request) {
-        // Valida credenciales (email y password) contra la DB
+        // Válida credenciales (email y password) contra la DB
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(request.getEmail(), request.getPassword())
         );

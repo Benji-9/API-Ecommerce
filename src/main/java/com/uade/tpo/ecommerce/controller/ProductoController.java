@@ -1,6 +1,7 @@
 package com.uade.tpo.ecommerce.controller;
 
-import com.uade.tpo.ecommerce.model.Producto;
+import com.uade.tpo.ecommerce.dto.ProductoRequestDTO;
+import com.uade.tpo.ecommerce.dto.ProductoResponseDTO;
 import com.uade.tpo.ecommerce.service.ProductoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -16,53 +17,34 @@ public class ProductoController {
     @Autowired
     private ProductoService productoService;
 
-    /**
-     * LISTAR PRODUCTOS
-     * Puede recibir un parámetro opcional 'categoriaId' para filtrar.
-     * URL: GET http://localhost:8081/api/productos
-     * URL con Filtro: GET http://localhost:8081/api/productos?categoriaId=1
-     */
+    // GET http://localhost:8081/api/productos -> Devuelve lista de ResponseDTO
     @GetMapping
-    public ResponseEntity<List<Producto>> getProductos(@RequestParam(required = false) Long categoriaId) {
+    public ResponseEntity<List<ProductoResponseDTO>> getProductos(@RequestParam(required = false) Long categoriaId) {
         if (categoriaId != null) {
-            return ResponseEntity.ok(productoService.getProductosByCategoria(categoriaId));
+            return ResponseEntity.ok(productoService.getProductosByCategoriaDTO(categoriaId));
         }
-        return ResponseEntity.ok(productoService.getAllProductos());
+        return ResponseEntity.ok(productoService.getAllProductosDTO());
     }
 
-    /**
-     * BUSCAR POR ID (Detalle del producto)
-     * URL: GET http://localhost:8081/api/productos/{id}
-     */
+    // GET http://localhost:8081/api/productos/{id} -> Detalle del producto en DTO
     @GetMapping("/{id}")
-    public ResponseEntity<Producto> getProductoById(@PathVariable Long id) {
-        return ResponseEntity.ok(productoService.getProductoById(id));
+    public ResponseEntity<ProductoResponseDTO> getProductoById(@PathVariable Long id) {
+        return ResponseEntity.ok(productoService.getProductoDTOById(id));
     }
 
-    /**
-     * ALTA DE PRODUCTO
-     * URL: POST http://localhost:8081/api/productos
-     * Body: JSON con datos del producto
-     */
+    // POST http://localhost:8081/api/productos -> Recibe RequestDTO, devuelve ResponseDTO
     @PostMapping
-    public ResponseEntity<Producto> saveProducto(@RequestBody Producto producto) {
-        Producto nuevo = productoService.saveProducto(producto);
-        return new ResponseEntity<>(nuevo, HttpStatus.CREATED);
+    public ResponseEntity<ProductoResponseDTO> saveProducto(@RequestBody ProductoRequestDTO request) {
+        return new ResponseEntity<>(productoService.crearProducto(request), HttpStatus.CREATED);
     }
 
-    /**
-     * EDITAR PRODUCTO
-     * URL: PUT http://localhost:8081/api/productos/{id}
-     */
+    // PUT http://localhost:8081/api/productos/{id} -> Actualización mediante DTO
     @PutMapping("/{id}")
-    public ResponseEntity<Producto> updateProducto(@PathVariable Long id, @RequestBody Producto producto) {
-        return ResponseEntity.ok(productoService.updateProducto(id, producto));
+    public ResponseEntity<ProductoResponseDTO> updateProducto(@PathVariable Long id, @RequestBody ProductoRequestDTO request) {
+        return ResponseEntity.ok(productoService.updateProductoFromDTO(id, request));
     }
 
-    /**
-     * ELIMINAR PRODUCTO
-     * URL: DELETE http://localhost:8081/api/productos/{id}
-     */
+    // DELETE
     @DeleteMapping("/{id}")
     public ResponseEntity<Void> deleteProductoById(@PathVariable Long id) {
         productoService.deleteProductoById(id);
