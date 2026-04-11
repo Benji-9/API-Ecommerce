@@ -24,6 +24,7 @@ public class ResourceNotFoundException extends RuntimeException {
      * * @param recurso Nombre de la entidad (ej.: "Producto", "Usuario").
      * @param id El identificador que no se encontró.
      */
+    //TODO : sacar recurso.
     public ResourceNotFoundException(String recurso, Long id) {
         super(String.format("%s con ID %d no fue encontrado/a en el sistema.", recurso, id));
     }

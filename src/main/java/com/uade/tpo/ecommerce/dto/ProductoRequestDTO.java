@@ -11,5 +11,5 @@ public class ProductoRequestDTO {
     private String descripcion;
     private Integer stock;
     private List<String> imagenesUrl;
-    private List<Long> categoriaIds; // Recibimos IDs de categorías
+    private List<Long> categoriaIds; // Recibimos ID de categorías
 }

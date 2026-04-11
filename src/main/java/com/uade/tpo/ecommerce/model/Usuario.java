@@ -36,10 +36,10 @@ public class Usuario implements UserDetails {
     @Column(nullable = false)
     private String password;
 
-    // NUEVO: Fecha de nacimiento usando el tipo de dato de Java 8+
+    // Fecha de nacimiento usando el tipo de dato de Java 8+
     private LocalDate fechaNacimiento;
 
-    // NUEVO: Sexo usando enumeración para mayor control
+    // Sexo usando enumeración
     @Enumerated(EnumType.STRING)
     private Sexo sexo;
 

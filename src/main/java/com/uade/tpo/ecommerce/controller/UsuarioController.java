@@ -57,6 +57,8 @@ public class UsuarioController {
         dto.setApellido(usuario.getApellido());
         dto.setEmail(usuario.getEmail());
         dto.setRole(usuario.getRole());
+        dto.setFechaNacimiento(usuario.getFechaNacimiento());
+        dto.setSexo(usuario.getSexo());
         return dto;
     }
 }
